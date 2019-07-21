@@ -1,69 +1,322 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## 电路游戏后端
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+*前缀为http://47.103.100.226/circuitry_game_be/public/*
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. 登录注册
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+#### 1.1 模拟登录
 
-## Learning Laravel
+| URI                                 | 备注 |
+| ----------------------------------- | ---- |
+| `GET` `/auth/mock_login/{user_id?}` |      |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+- 响应
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Mock Login Successfully"
+  }
+  ```
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
+#### 1.2 登录
 
-## Contributing
+| URI                  | 备注 |
+| -------------------- | ---- |
+| `POST` `/auth/login` |      |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- 请求
 
-## Security Vulnerabilities
+  ```
+  {
+      "account": "Dr.ABC", //即用户名，不是手机号
+      "password": "bbt"
+  }
+  ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- 响应
 
-## License
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Login Successfully"
+  }
+  
+  //失败：status有1，2，3，分别代表用户名为空，用户不存在，用户密码不对
+  {
+      "status": 3,
+      "msg": "Password is not correct"
+  }
+  ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+#### 1.3 注册
+
+| URI                | 备注 |
+| ------------------ | ---- |
+| `POST` `/register` |      |
+
+- 请求
+
+  ```
+  {
+      "name": "King",  //用户名，也就是登录中的account
+      "phone": "15392802843",
+      "sex": 1,   //0未知，1男，2女
+      "password": "bbttech"
+  }
+  ```
+
+- 响应
+
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Register successfully"
+  }
+  
+  //失败：status有1，2，3，分别代表电话号已存在，用户名已存在，post过来的信息有空值
+  {
+      "status": 1,
+      "msg": "Phone already exists"
+  }
+  ```
+
+
+
+#### 1.4 退出登录
+
+| URI                  | 备注 |
+| -------------------- | ---- |
+| `GET` `/auth/logout` |      |
+
+- 响应
+
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Logout Successfully"
+  }
+  ```
+
+
+
+
+
+### 2. 个人
+
+#### 2.1 查看个人基本信息
+
+| URI                          | 备注                                              |
+| ---------------------------- | ------------------------------------------------- |
+| `GET` `/api/user/{user_id?}` | 默认获取已登录用户，可传入user_id获取特定用户信息 |
+
+- 响应
+
+  ```
+  //成功
+  {
+      "id": 2,
+      "name": "Liza Carroll",
+      "sex": 1,
+      "phone": "14595166313",
+      "avatar": null,
+      "description": "This is a test for 'description'"
+  }
+  
+  //失败1: user_id不存在
+  {
+      "id": -1
+  }
+  
+  //失败2: 未登录
+  {
+      "status": 401,
+      "msg": "Unauthorized"
+  }
+  ```
+
+
+
+#### 2.2 重名检测
+
+| URI                        | 备注 |
+| -------------------------- | ---- |
+| `GET` `/check/name/{name}` |      |
+
+- 响应
+
+  ```
+  //用户名可用
+  {
+      "status": 0,
+      "msg": "Name is available"
+  }
+  
+  //用户名不可用
+  {
+      "status": 1,
+      "msg": "Name already exists"
+  }
+  ```
+
+
+
+#### 2.3 重号检测
+
+| URI                          | 备注 |
+| ---------------------------- | ---- |
+| `GET` `/check/phone/{phone}` |      |
+
+- 响应
+
+  ```
+  //手机号可用
+  {
+      "status": 0,
+      "msg": "Phone is available"
+  }
+  
+  //手机号不可用
+  {
+      "status": 1,
+      "msg": "Phone already exists"
+  }
+  ```
+
+
+
+#### 2.4 修改个人简介
+
+| URI                            | 备注 |
+| ------------------------------ | ---- |
+| `POST` `/api/user/change/info` |      |
+
+- 请求
+
+  ```
+  {
+      "name": "my_new_name", //不想改可设为null传过来
+                             //如果重名，name和description都不会更新
+      "description": "My description context"  //不想改可设为null传过来
+  }
+  ```
+
+- 响应
+
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Update information successfully"
+  }
+  
+  //失败
+  {
+      "status": 1,
+      "msg": "Name already exists"
+  }
+  ```
+
+
+
+### 3.好友
+
+#### 3.1 查看好友列表
+
+| URI                      | 备注           |
+| ------------------------ | -------------- |
+| `GET` `/api/friend/list` | 只能获取自己的 |
+
+- 响应
+
+  ```
+  //好友列表不为空
+  [
+      {
+          "id": 3,
+          "name": "Dr.Peng",
+          "sex": 2,
+          "phone": "17711601743",
+          "avatar": null,
+          "description": "I am testing update function"
+      },
+      {
+          "id": 1,
+          "name": "Miss Prudence Toy",
+          "sex": 0,
+          "phone": "13856132057",
+          "avatar": null,
+          "description": "This is a test for 'description'"
+      }
+  ]
+  
+  //好友列表为空
+  []
+  ```
+
+
+
+#### 3.2 添加好友
+
+| URI                                  | 备注       |
+| ------------------------------------ | ---------- |
+| `POST` `/api/friend/add/{friend_id}` | 通过好友id |
+
+- 响应
+
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Add friend successfully"
+  }
+  
+  //失败1
+  {
+      "status": 1,
+      "msg": "Friend already exists"
+  }
+  
+  //失败2
+  {
+      "status": 2,
+      "msg": "Friend_id is invalid"
+  }
+  ```
+
+
+
+#### 3.3 删除好友
+
+| URI                                    | 备注       |
+| -------------------------------------- | ---------- |
+| `GET` `/api/friend/remove/{friend_id}` | 通过好友id |
+
+- 响应
+
+  ```
+  //成功
+  {
+      "status": 0,
+      "msg": "Remove friend successfully"
+  }
+  
+  //失败1
+  {
+      "status": 1,
+      "msg": "Friend does not exists"
+  }
+  ```
+
+
+

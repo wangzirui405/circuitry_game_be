@@ -24,6 +24,8 @@ class FriendController extends Controller
         $record = Friend::where('user_id', $userId)->where('friend_id', $friend_id)->first();
         if ($record || $userId == $friend_id)
             return response()->json(['status' => 1, 'msg' => 'Friend already exists']);
+        if (! Friend::where('user_id', $friend_id)->first())
+            return response()->json(['status' => 2, 'msg' => 'Friend_id is invalid']);
         $newRecord = new Friend;
         $newRecord->user_id = $userId;
         $newRecord->friend_id = $friend_id;

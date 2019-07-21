@@ -26,6 +26,9 @@ class UserController extends Controller
     public function getUserInfo(Request $request, $user_id = null) {
         $userId = $user_id ? $user_id : getUserId($request);
         $user = User::where('id', $userId)->first();
+        if (!$user) {
+            return response()->json(["id" => -1]);
+        }
         return response()->json($user);
     }
 
@@ -34,7 +37,10 @@ class UserController extends Controller
         $user = User::where('id', $userId)->first();
         $newName = $request->input('name');
         $newDescription = $request->input('description');
-        if ($newName)
+        $exists = User::where('name', $newName)->where('id', '!=', $userId)->first();
+        if ($exists)
+            return response()->json(['status' => 1, 'msg' => 'Name already exists']);
+        if ($newName && ! User::where('name', $newName)->first())
             $user->name = $newName;
         if ($newDescription)
             $user->description = $newDescription;
